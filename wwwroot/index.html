@@ -39,16 +39,16 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">Start Bootstrap</a>
+                <a class="navbar-brand" href="#">DMS Project Storage</a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="#about">About</a>
+                        <a href="#print">Print Ticket</a>
                     </li>
                     <li>
-                        <a href="#services">Services</a>
+                        <a href="#rules">Fine Print</a>
                     </li>
                     <li>
                         <a href="#contact">Contact</a>
@@ -60,62 +60,73 @@
         <!-- /.container -->
     </nav>
 
-    <!-- Full Width Image Header -->
-    <header class="header-image">
-        <div class="headline">
-            <div class="container">
-                <h1>One Page Wonder</h1>
-                <h2>Will Knock Your Socks Off</h2>
-            </div>
-        </div>
-    </header>
-
     <!-- Page Content -->
     <div class="container">
+
+        <div class="featurette" id="print">
+            <h2 class="featurette-heading">Print storage ticket</h2>
+            <p>A ticket is <span style="color:darkred">REQUIRED</span> on anything left at DMS</p>
+            <form class="form-horizontal span" action="./ticketApi/print" method="post">
+
+                <div class="form-group">
+                    <label for="name" class="col-lg-2 control-label">Name</label>
+                    <div class="col-lg-3">
+                    <input type="text" class="form-control" name="name" placeholder="Name">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="col-lg-2 control-label">Email</label>
+                    <div class="col-lg-3">
+                    <input type="text" class="form-control" name="email" placeholder="Email">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="desc" class="col-lg-2 control-label">Description</label>
+                    <div class="col-lg-5">
+                        <input type="text" class="form-control" name="desc" placeholder="Short description of project being stored">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="type" class="col-lg-2 control-label">Storage Type</label>
+                    <div class="col-lg-3">
+                        <select class="form-control" name="type">
+                            <option selected value="small">Small Shelf</option>
+                            <option value="large">Large Shelf</option>
+                            <option value="vertical">Vertical</option>
+                            <option value="pallet">Pallet</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <span class="col-lg-2"></span>
+                    <div class="col-lg-5">
+                        <button class="btn btn-primary" type="submit">Print Ticket that expires on [FEBRUARY 8th]</button>
+                    </div>
+                </div>
+            </form>
+
+            <p>You agree to remove your item before [FEBRUARY 8th] or attend the monthly storage meeting to request an extension</p>
+        </div>
 
         <hr class="featurette-divider">
 
         <!-- First Featurette -->
-        <div class="featurette" id="about">
-            <img class="featurette-image img-circle img-responsive pull-right" src="http://placehold.it/500x500">
-            <h2 class="featurette-heading">This First Heading
-                <span class="text-muted">Will Catch Your Eye</span>
-            </h2>
-            <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
-        </div>
-
-        <hr class="featurette-divider">
-
-        <!-- Second Featurette -->
-        <div class="featurette" id="services">
-            <img class="featurette-image img-circle img-responsive pull-left" src="http://placehold.it/500x500">
-            <h2 class="featurette-heading">The Second Heading
-                <span class="text-muted">Is Pretty Cool Too.</span>
-            </h2>
-            <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
+        <div class="featurette" id="rules">
+            <h2 class="featurette-heading">Project Storage Fine Print</h2>
+            <p class="lead">Rules go here</p>
         </div>
 
         <hr class="featurette-divider">
 
         <!-- Third Featurette -->
         <div class="featurette" id="contact">
-            <img class="featurette-image img-circle img-responsive pull-right" src="http://placehold.it/500x500">
-            <h2 class="featurette-heading">The Third Heading
-                <span class="text-muted">Will Seal the Deal.</span>
-            </h2>
-            <p class="lead">Donec ullamcorper nulla non metus auctor fringilla. Vestibulum id ligula porta felis euismod semper. Praesent commodo cursus magna, vel scelerisque nisl consectetur. Fusce dapibus, tellus ac cursus commodo.</p>
+            <h2 class="featurette-heading">Contact Logistics</h2>
+            <p class="lead">Email <a href="mailto:logistics@dallasmakerspace.org">logistics@dallasmakerspace.org</a> with any questions or comments.</p>
         </div>
-
-        <hr class="featurette-divider">
-
-        <!-- Footer -->
-        <footer>
-            <div class="row">
-                <div class="col-lg-12">
-                    <p>Copyright &copy; Your Website 2014</p>
-                </div>
-            </div>
-        </footer>
 
     </div>
     <!-- /.container -->
