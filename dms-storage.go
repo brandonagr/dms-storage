@@ -3,17 +3,71 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"html"
-	"io/ioutil"
+	"log"
 	"net/http"
+	"time"
+
+	"github.com/gorilla/schema"
 )
+
+type ticketFormSubmission struct {
+	Name        string `schema:"name"`
+	Email       string `schema:"email"`
+	Description string `schema:"description"`
+	StorageType string `schema:"storageType"`
+	SubmitTime  string `schema:"submitTime"`
+	ExpireDate  string `schema:"expireTime"`
+}
+
+func (ticket *ticketFormSubmission) computeTime() {
+	curTime := time.Now()
+	expireTime := nthWeekdayOfMonth(time.Sunday, 1, curTime)
+	if expireTime.Before(curTime) {
+		expireTime = nthWeekdayOfMonth(time.Sunday, 1, curTime.AddDate(0, 1, 0))
+	}
+
+	ticket.SubmitTime = curTime.Format("2006-01-02 15:04")
+	ticket.ExpireDate = expireTime.Format("January 2")
+}
+
+func nthWeekdayOfMonth(weekday time.Weekday, n int, date time.Time) time.Time {
+	count := 0
+	year, month, _ := date.Date()
+	currentDate := time.Date(year, month, 1, 0, 0, 0, 0, time.UTC)
+	for {
+		if currentDate.Weekday() == weekday {
+			count++
+			if count == n {
+				return currentDate
+			}
+		}
+		currentDate = currentDate.AddDate(0, 0, 1)
+	}
+}
 
 func ticketAPIHandler(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
-	body, _ := ioutil.ReadAll(r.Body)
 
-	fmt.Fprintf(w, "Hello, %q %s", html.EscapeString(r.URL.Path), body)
+	err := r.ParseForm()
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+	}
+
+	ticket := new(ticketFormSubmission)
+
+	decoder := schema.NewDecoder()
+	err = decoder.Decode(ticket, r.PostForm)
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+	}
+
+	ticket.computeTime()
+
+	// just echo back body for now
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(ticket)
 }
 
 func main() {
@@ -21,5 +75,5 @@ func main() {
 	http.HandleFunc("/ticketApi/", ticketAPIHandler)
 
 	fmt.Println("Hosting...")
-	http.ListenAndServe(":8080", nil)
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }

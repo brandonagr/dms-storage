@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>One Page Wonder - Start Bootstrap Template</title>
+    <title>DMS Storage Ticket</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
@@ -66,50 +66,62 @@
         <div class="featurette" id="print">
             <h2 class="featurette-heading">Print storage ticket</h2>
             <p>A ticket is <span style="color:darkred">REQUIRED</span> on anything left at DMS</p>
-            <form class="form-horizontal span" action="./ticketApi/print" method="post">
+            <form class="form-horizontal span" id="form" method="post">
 
                 <div class="form-group">
                     <label for="name" class="col-lg-2 control-label">Name</label>
                     <div class="col-lg-3">
-                    <input type="text" class="form-control" name="name" placeholder="Name">
+                        <input type="text" class="form-control" name="name" placeholder="Name">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="email" class="col-lg-2 control-label">Email</label>
                     <div class="col-lg-3">
-                    <input type="text" class="form-control" name="email" placeholder="Email">
+                        <input type="text" class="form-control" name="email" placeholder="Email">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="desc" class="col-lg-2 control-label">Description</label>
                     <div class="col-lg-5">
-                        <input type="text" class="form-control" name="desc" placeholder="Short description of project being stored">
+                        <input type="text" class="form-control" name="description" placeholder="Short description of project being stored">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="type" class="col-lg-2 control-label">Storage Type</label>
                     <div class="col-lg-3">
-                        <select class="form-control" name="type">
-                            <option selected value="small">Small Shelf</option>
-                            <option value="large">Large Shelf</option>
-                            <option value="vertical">Vertical</option>
-                            <option value="pallet">Pallet</option>
+                        <select class="form-control" name="storageType">
+                            <option selected value="Small Shelf">Small Shelf</option>
+                            <option value="Large Shelf">Large Shelf</option>
+                            <option value="Vertical">Vertical</option>
+                            <option value="Pallet">Pallet</option>
                         </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-lg-7 col-md-offset-2">
+                        <div id="messages"></div>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <span class="col-lg-2"></span>
                     <div class="col-lg-5">
-                        <button class="btn btn-primary" type="submit">Print Ticket that expires on [FEBRUARY 8th]</button>
+                        <button class="btn btn-primary" type="submit" id="submit">Print Ticket that expires on <span id="expireDate">NEXT FIRST SUNDAY OF MONTH</span></button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-lg-7 col-md-offset-2">
+                        <div id="result"></div>
                     </div>
                 </div>
             </form>
 
-            <p>You agree to remove your item before [FEBRUARY 8th] or attend the monthly storage meeting to request an extension</p>
+            <p>You agree to remove your item before <span id="expireDate">NEXT FIRST SUNDAY OF MONTH</span> or attend the monthly
+                storage meeting to request an extension</p>
         </div>
 
         <hr class="featurette-divider">
@@ -125,7 +137,9 @@
         <!-- Third Featurette -->
         <div class="featurette" id="contact">
             <h2 class="featurette-heading">Contact Logistics</h2>
-            <p class="lead">Email <a href="mailto:logistics@dallasmakerspace.org">logistics@dallasmakerspace.org</a> with any questions or comments.</p>
+            <p class="lead">Email <a href="mailto:logistics@dallasmakerspace.org">logistics@dallasmakerspace.org</a> with any questions or
+                comments.
+            </p>
         </div>
 
     </div>
@@ -133,9 +147,147 @@
 
     <!-- jQuery -->
     <script src="js/jquery.js"></script>
-
-    <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/bootstrapValidator.min.js"></script>
+
+    <script>
+        function nthWeekdayOfMonth(weekday, n, date) {
+            var count = 0,
+                idate = new Date(date.getFullYear(), date.getMonth(), 1);
+            while (true) {
+                if (idate.getDay() === weekday) {
+                    if (++count == n) {
+                        break;
+                    }
+                }
+                idate.setDate(idate.getDate() + 1);
+            }
+            return idate;
+        }
+        function ordinal_suffix_of(i) {
+            var j = i % 10,
+                k = i % 100;
+            if (j == 1 && k != 11) {
+                return i + "st";
+            }
+            if (j == 2 && k != 12) {
+                return i + "nd";
+            }
+            if (j == 3 && k != 13) {
+                return i + "rd";
+            }
+            return i + "th";
+        }
+        function formatDate(date) {
+            var monthNames = [
+                "January", "February", "March",
+                "April", "May", "June", "July",
+                "August", "September", "October",
+                "November", "December"
+            ];
+
+            var day = date.getDate();
+            var monthIndex = date.getMonth();
+
+            return monthNames[monthIndex] + ' ' + ordinal_suffix_of(day);
+        }
+
+        $(document).ready(function () {
+
+            // set the date
+            curDate = new Date()
+            expireDate = nthWeekdayOfMonth(0, 1, curDate)
+            if (expireDate < curDate) {
+                curDate.setMonth(curDate.getMonth() + 1)
+                expireDate = nthWeekdayOfMonth(0, 1, curDate)
+            }
+            $('[id="expireDate"]').text(formatDate(expireDate))
+
+            // setup bootstrapValidator
+            $("#form").bootstrapValidator({
+                container: '#messages',
+                feedbackIcons: {
+                    valid: 'glyphicon glyphicon-ok',
+                    invalid: 'glyphicon glyphicon-remove',
+                    validating: 'glyphicon glyphicon-refresh'
+                },
+                fields: {
+                    name: {
+                        validators: {
+                            notEmpty: {
+                                message: 'The full name is required and cannot be empty'
+                            }
+                        }
+                    },
+                    email: {
+                        validators: {
+                            notEmpty: {
+                                message: 'The email address is required and cannot be empty'
+                            },
+                            emailAddress: {
+                                message: 'The email address is not valid'
+                            }
+                        }
+                    },
+                    description: {
+                        validators: {
+                            notEmpty: {
+                                message: 'The description is required and cannot be empty'
+                            },
+                            stringLength: {
+                                max: 144,
+                                message: 'The description must be less than 100 characters long'
+                            }
+                        }
+                    }
+                }
+            }).on('submit', function (e) {
+                if (!e.isDefaultPrevented()) {
+                    // send ajax
+                    $.ajax({
+                        url: './ticketApi/print', // url where to submit the request
+                        type: "POST", // type of action POST || GET
+                        dataType: 'json', // data type
+                        data: $("#form").serialize(), // post data || get data
+                        success: function (result) {
+
+                            console.log(result);
+
+                            $("#result").text("Printed!");
+                            $("#submit").removeAttr('disabled');
+                        },
+                        error: function (xhr, resp, text) {
+                            console.log(xhr, resp, text);
+
+                            $("#result").text("ERROR PRINTING :( " + text);
+                            $("#submit").removeAttr('disabled');
+                        }
+                    })
+
+                    e.preventDefault()
+                }
+            })
+
+            // click on button submit
+            // $("#submit").on('click', function () {
+
+            //     // send ajax
+            //     $.ajax({
+            //         url: './ticketApi/print', // url where to submit the request
+            //         type: "POST", // type of action POST || GET
+            //         dataType: 'json', // data type
+            //         data: $("#form").serialize(), // post data || get data
+            //         success: function (result) {
+            //             // you can see the result from the console
+            //             // tab of the developer tools
+            //             console.log(result);
+            //         },
+            //         error: function (xhr, resp, text) {
+            //             console.log(xhr, resp, text);
+            //         }
+            //     })
+        });
+    </script>
 
 </body>
 
