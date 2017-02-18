@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"time"
+	"os/exec"
 
 	"github.com/gorilla/schema"
 )
@@ -53,6 +54,7 @@ func ticketAPIHandler(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		http.Error(w, err.Error(), 400)
+		return
 	}
 
 	ticket := new(ticketFormSubmission)
@@ -61,9 +63,20 @@ func ticketAPIHandler(w http.ResponseWriter, r *http.Request) {
 	err = decoder.Decode(ticket, r.PostForm)
 	if err != nil {
 		http.Error(w, err.Error(), 400)
+		return
 	}
 
 	ticket.computeTime()
+
+
+	cmd := exec.Command("python",  "printTicket.py", ticket.ExpireDate, ticket.Name, ticket.Email, ticket.StorageType, ticket.Description, ticket.SubmitTime)
+        log.Print(cmd.Args)
+        _, err = cmd.CombinedOutput()
+        if err != nil { 
+		log.Print(err.Error())
+		http.Error(w, err.Error(), 500)
+		return
+ 	}
 
 	// just echo back body for now
 	w.Header().Set("Content-Type", "application/json")
