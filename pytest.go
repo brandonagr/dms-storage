@@ -1,18 +1,13 @@
 package main
 
 import "fmt"
-import "github.com/sbinet/go-python"
-
-func init() {
-   err := python.Initialize()
-   if err != nil {
-          panic(err.Error())
-   } 
-}
+import "os/exec"
 
 func main() {
-     gostr := "foo" 
-     pystr := python.PyString_FromString(gostr)
-     str := python.PyString_AsString(pystr)
-     fmt.Println("hello [", str, "]")
+
+	cmd := exec.Command("python",  "printTicket.py", "March 5", "Brandon Green", "brandonagr@gmail.com", "small", "short description", "2017-02-01 10:00")
+	fmt.Println(cmd.Args)
+	out, err := cmd.CombinedOutput()
+	if err != nil { fmt.Println(err); }
+	fmt.Println(string(out))
 }
