@@ -39,9 +39,9 @@ def printTicketFunc(expirationDate, name, email, type, description, printTime):
 	p.text("Failure to remove items will result in loss of\nstorage privileges.")
 
 	p.set(align='center')
-	p.text("\n\n")
+	p.text("\n")
 	qrDataString = str.format("{};{};{};{}", name, email, type, printTime)
-	p.qr(qrDataString, 1, 8, 2)
+	p.qr(qrDataString, 1, 6, 2)
 
 	p.cut()
 

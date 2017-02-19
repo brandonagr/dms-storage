@@ -271,6 +271,7 @@
                             $("#result").text("Printed!");
                             $("#submit").removeAttr('disabled');
                             $("#form")[0].reset()
+			    $("#form").data('bootstrapValidator').resetForm()
                         },
                         error: function (xhr, resp, text) {
                             console.log(xhr, resp, text);
