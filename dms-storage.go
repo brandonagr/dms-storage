@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os/exec"
+	"sync"
 	"time"
 
 	"github.com/gorilla/schema"
@@ -21,6 +22,8 @@ type ticketFormSubmission struct {
 	SubmitTime  string `schema:"submitTime"`
 	ExpireDate  string `schema:"expireTime"`
 }
+
+var printerMutex = &sync.Mutex{}
 
 func (ticket *ticketFormSubmission) computeTime() {
 	curTime := time.Now()
@@ -67,6 +70,9 @@ func ticketAPIHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ticket.computeTime()
+
+	printerMutex.Lock()
+	defer printerMutex.Unlock()
 
 	cmd := exec.Command("python", "printTicket.py", ticket.ExpireDate, ticket.Name, ticket.Email, ticket.StorageType, ticket.Description, ticket.SubmitTime)
 	log.Print(cmd.Args)
