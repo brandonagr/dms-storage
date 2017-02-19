@@ -48,7 +48,7 @@
                         <a href="#print">Print Ticket</a>
                     </li>
                     <li>
-                        <a href="#rules">Fine Print</a>
+                        <a href="#rules">Rules</a>
                     </li>
                     <li>
                         <a href="#contact">Contact</a>
@@ -128,8 +128,18 @@
 
         <!-- First Featurette -->
         <div class="featurette" id="rules">
-            <h2 class="featurette-heading">Project Storage Fine Print</h2>
-            <p class="lead">Rules go here</p>
+            <h2 class="featurette-heading">Project Storage Rules</h2>
+            <p>The Logistics Committee hosts the Dallas Makerspace's Storage Meeting on a monthly basis - typically on the first Sunday of each month at 4PM in the Conference room. At this meeting, advice and guidance is given to all of the affected operating committees to manage and coordinate a unified and transparent storage policy at the Dallas Makerspace. Although each committee technically maintains control over its own area, storage issues often transcend the domain of any one committee and the Storage Meeting provides a forum to help coordinate these policies.</p>
+            <ul>
+                <li><b>USING STORAGE:</b> Print out a Storage Ticket, select a slot, and fill it taking care not to present a hazard. Vacate your slot before the printed expiration date, or if you need more time attend a Storage Meeting (or have omeone act as an Agent on your behalf).
+                <li><b>USING PROJECT STORAGE (shelves):</b> Insert your completed Storage Ticket in the slot, occupy it, and keep your project visually separate from adjacent slots
+                <li><b>USING PALLET STORAGE:</b> Load your pallet and park it under the shelves or in pallet storage. Situate materials so they remain stable; expect your pallet to be moved the longer it is at DMS.
+                <li><b>USING FLOOR STORAGE:</b> Contact Logistics prior to using floor storage for more than 24 hours.
+                <li><b>EXTENSIONS:</b> You or an agent must attend a Storage Meeting (typically 1st Saturday of the month) in person to request an extension
+                <li><b>REMOVALS:</b> Projects that have exceeded the date printed on the Storage Ticket will be tagged for removal and members are to remove them by the printed date on the Removal Notice; after this date they may be relocated to Offsite Storage at any time.
+                <li><b>DISPOSAL OF PROJECTS:</b> Projects removed to offsite storage may be disposed of 28 days after the date on the Removal Notice.
+                <li><b>ACCESSING OFFSITE STORAGE:</b> Assured Self Storage, 2444 Luna Road Carrollton TX, Unit 1000, keys located below Storage Kiosk
+            </ul>
         </div>
 
         <hr class="featurette-divider">
@@ -137,8 +147,7 @@
         <!-- Third Featurette -->
         <div class="featurette" id="contact">
             <h2 class="featurette-heading">Contact Logistics</h2>
-            <p class="lead">Email <a href="mailto:logistics@dallasmakerspace.org">logistics@dallasmakerspace.org</a> with any questions or
-                comments.
+            <p class="lead">Email logistics@dallasmakerspace.org or attend a Logistics/Storage Meeting.
             </p>
         </div>
 
@@ -191,9 +200,8 @@
 
             return monthNames[monthIndex] + ' ' + ordinal_suffix_of(day);
         }
-
-        $(document).ready(function () {
-
+        function setDateInText()
+        {
             // set the date
             curDate = new Date()
             expireDate = nthWeekdayOfMonth(0, 1, curDate)
@@ -202,6 +210,13 @@
                 expireDate = nthWeekdayOfMonth(0, 1, curDate)
             }
             $('[id="expireDate"]').text(formatDate(expireDate))
+        }
+
+        $(document).ready(function () {
+
+            setDateInText()            
+            setInterval(setDateInText, 60000); // keep text up to date
+            
 
             // setup bootstrapValidator
             $("#form").bootstrapValidator({
@@ -255,6 +270,7 @@
 
                             $("#result").text("Printed!");
                             $("#submit").removeAttr('disabled');
+                            $("#form")[0].reset()
                         },
                         error: function (xhr, resp, text) {
                             console.log(xhr, resp, text);
