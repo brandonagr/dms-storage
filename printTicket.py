@@ -45,5 +45,24 @@ def printTicketFunc(expirationDate, name, email, type, description, printTime):
 
 	p.cut()
 
+	p.set(align='center', width=2, height=2)
+        p.text("DMS Storage Receipt\n\n")
+
+        p.set(align='left', width=1, height=1)
+        p.text("Keep this receipt as a reminder that you\n")
+        p.text("agreed to remove your item before:\n")
+	p.set(align='center', text_type='B', width=2, height=2)
+	p.text(expirationDate)
+	p.text("\n\n")
+
+        p.set(align='left')
+        p.text(str.format("Name:\t{}\n", name))
+        p.text(str.format("Email:\t{}\n", email))
+        p.text(str.format("Type:\t{}\n", type))
+        p.text(str.format("Desc:\t{}\n", description))
+        p.text(str.format("Start:\t{}\n", printTime))
+	p.cut()
+
+
 
 printTicketFunc(argv[1], argv[2], argv[3], argv[4], argv[5], argv[6])
