@@ -23,8 +23,8 @@ def printTicketFunc(expirationDate, name, email, type, description, printTime):
 	p.set(align='center', width=2, height=2)
 	p.text("DMS Storage Ticket\n\n")
 	p.set(align='left')
-	p.text("Ticket required on any items left at DMS\n")
-	p.text("Place ticket in holder or on project\n\n")
+	p.text("Ticket required on any items left at DMS.\n")
+	p.text("Place ticket in holder or on project.\n\n")
 
 	p.set(align='left')
 	p.text(str.format("Name:\t{}\n", name))
