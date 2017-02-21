@@ -129,16 +129,30 @@
         <!-- First Featurette -->
         <div class="featurette" id="rules">
             <h2 class="featurette-heading">Project Storage Rules</h2>
-            <p>The Logistics Committee hosts the Dallas Makerspace's Storage Meeting on a monthly basis - typically on the first Sunday of each month at 4PM in the Conference room. At this meeting, advice and guidance is given to all of the affected operating committees to manage and coordinate a unified and transparent storage policy at the Dallas Makerspace. Although each committee technically maintains control over its own area, storage issues often transcend the domain of any one committee and the Storage Meeting provides a forum to help coordinate these policies.</p>
+            <p>The Logistics Committee hosts the Dallas Makerspace's Storage Meeting on a monthly basis - typically on the first
+                Sunday of each month at 4PM in the Conference room. At this meeting, advice and guidance is given to all
+                of the affected operating committees to manage and coordinate a unified and transparent storage policy at
+                the Dallas Makerspace. Although each committee technically maintains control over its own area, storage issues
+                often transcend the domain of any one committee and the Storage Meeting provides a forum to help coordinate
+                these policies.</p>
             <ul>
-                <li><b>USING STORAGE:</b> Print out a Storage Ticket, select a slot, and fill it taking care not to present a hazard. Vacate your slot before the printed expiration date, or if you need more time attend a Storage Meeting (or have omeone act as an Agent on your behalf).
-                <li><b>USING PROJECT STORAGE (shelves):</b> Insert your completed Storage Ticket in the slot, occupy it, and keep your project visually separate from adjacent slots
-                <li><b>USING PALLET STORAGE:</b> Load your pallet and park it under the shelves or in pallet storage. Situate materials so they remain stable; expect your pallet to be moved the longer it is at DMS.
-                <li><b>USING FLOOR STORAGE:</b> Contact Logistics prior to using floor storage for more than 24 hours.
-                <li><b>EXTENSIONS:</b> You or an agent must attend a Storage Meeting (typically 1st Saturday of the month) in person to request an extension
-                <li><b>REMOVALS:</b> Projects that have exceeded the date printed on the Storage Ticket will be tagged for removal and members are to remove them by the printed date on the Removal Notice; after this date they may be relocated to Offsite Storage at any time.
-                <li><b>DISPOSAL OF PROJECTS:</b> Projects removed to offsite storage may be disposed of 28 days after the date on the Removal Notice.
-                <li><b>ACCESSING OFFSITE STORAGE:</b> Assured Self Storage, 2444 Luna Road Carrollton TX, Unit 1000, keys located below Storage Kiosk
+                <li><b>USING STORAGE:</b> Print out a Storage Ticket, select a slot, and fill it taking care not to present a
+                    hazard. Vacate your slot before the printed expiration date, or if you need more time attend a Storage
+                    Meeting (or have omeone act as an Agent on your behalf).</li>
+                <li><b>USING PROJECT STORAGE (shelves):</b> Insert your completed Storage Ticket in the slot, occupy it, and
+                    keep your project visually separate from adjacent slots</li>
+                <li><b>USING PALLET STORAGE:</b> Load your pallet and park it under the shelves or in pallet storage. Situate
+                    materials so they remain stable; expect your pallet to be moved the longer it is at DMS.</li>
+                <li><b>USING FLOOR STORAGE:</b> Contact Logistics prior to using floor storage for more than 24 hours.</li>
+                <li><b>EXTENSIONS:</b> You or an agent must attend a Storage Meeting (typically 1st Saturday of the month) in
+                    person to request an extension</li>
+                <li><b>REMOVALS:</b> Projects that have exceeded the date printed on the Storage Ticket will be tagged for removal
+                    and members are to remove them by the printed date on the Removal Notice; after this date they may be
+                    relocated to Offsite Storage at any time.</li>
+                <li><b>DISPOSAL OF PROJECTS:</b> Projects removed to offsite storage may be disposed of 28 days after the date
+                    on the Removal Notice.</li>
+                <li><b>ACCESSING OFFSITE STORAGE:</b> Assured Self Storage, 2444 Luna Road Carrollton TX, Unit 1000, keys located
+                    below Storage Kiosk</li>
             </ul>
         </div>
 
@@ -200,8 +214,7 @@
 
             return monthNames[monthIndex] + ' ' + ordinal_suffix_of(day);
         }
-        function setDateInText()
-        {
+        function setDateInText() {
             // set the date
             curDate = new Date()
             expireDate = nthWeekdayOfMonth(0, 1, curDate)
@@ -214,9 +227,19 @@
 
         $(document).ready(function () {
 
-            setDateInText()            
+            // setup logging
+            var appInsights = window.appInsights || function (config) {
+                function i(config) { t[config] = function () { var i = arguments; t.queue.push(function () { t[config].apply(t, i) }) } } var t = { config: config }, u = document, e = window, o = "script", s = "AuthenticatedUserContext", h = "start", c = "stop", l = "Track", a = l + "Event", v = l + "Page", y = u.createElement(o), r, f; y.src = config.url || "https://az416426.vo.msecnd.net/scripts/a/ai.0.js"; u.getElementsByTagName(o)[0].parentNode.appendChild(y); try { t.cookie = u.cookie } catch (p) { } for (t.queue = [], t.version = "1.0", r = ["Event", "Exception", "Metric", "PageView", "Trace", "Dependency"]; r.length;)i("track" + r.pop()); return i("set" + s), i("clear" + s), i(h + a), i(c + a), i(h + v), i(c + v), i("flush"), config.disableExceptionTracking || (r = "onerror", i("_" + r), f = e[r], e[r] = function (config, i, u, e, o) { var s = f && f(config, i, u, e, o); return s !== !0 && t["_" + r](config, i, u, e, o), s }), t
+            } ({
+                instrumentationKey: "a9d49e5a-9eb5-4ca9-9aad-076b1755cc5b"
+            });
+
+            window.appInsights = appInsights;
+            appInsights.trackPageView();
+
+            setDateInText()
             setInterval(setDateInText, 60000); // keep text up to date
-            
+
 
             // setup bootstrapValidator
             $("#form").bootstrapValidator({
@@ -268,13 +291,17 @@
 
                             console.log(result);
 
+                            window.appInsights.trackEvent("Ticket", { name: $("input[name=name]").val(), email: $("input[name=email]").val(), desc: $("input[name=description]").val(), storageType: $("select[name=storageType]").val() });
+
                             $("#result").text("");
                             $("#submit").removeAttr('disabled');
                             $("#form")[0].reset()
-			    $("#form").data('bootstrapValidator').resetForm()
+                            $("#form").data('bootstrapValidator').resetForm()
                         },
                         error: function (xhr, resp, text) {
                             console.log(xhr, resp, text);
+
+                            window.appInsights.trackEvent("TicketError", { errorText: text, name: $("input[name=name]").val(), email: $("input[name=email]").val(), desc: $("input[name=description]").val(), storageType: $("select[name=storageType]").val() });
 
                             $("#result").text("ERROR PRINTING :( " + text);
                             $("#submit").removeAttr('disabled');
