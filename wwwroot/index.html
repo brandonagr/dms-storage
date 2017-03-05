@@ -176,7 +176,7 @@
     <script>
         function nthWeekdayOfMonth(weekday, n, date) {
             var count = 0,
-                idate = new Date(date.getFullYear(), date.getMonth(), 1);
+                idate = new Date(date.getFullYear(), date.getMonth(), 1, 16);
             while (true) {
                 if (idate.getDay() === weekday) {
                     if (++count == n) {

@@ -39,7 +39,8 @@ func (ticket *ticketFormSubmission) computeTime() {
 func nthWeekdayOfMonth(weekday time.Weekday, n int, date time.Time) time.Time {
 	count := 0
 	year, month, _ := date.Date()
-	currentDate := time.Date(year, month, 1, 0, 0, 0, 0, time.UTC)
+	localZone, _ := time.LoadLocation("Local")
+	currentDate := time.Date(year, month, 1, 16, 0, 0, 0, localZone)
 	for {
 		if currentDate.Weekday() == weekday {
 			count++
