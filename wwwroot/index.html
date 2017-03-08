@@ -115,7 +115,7 @@
                 </div>
                 <div class="form-group">
                     <div class="col-lg-7 col-md-offset-2">
-                        <div id="result"></div>
+                        <div id="result" class="error"></div>
                     </div>
                 </div>
             </form>
@@ -138,7 +138,7 @@
             <ul>
                 <li><b>USING STORAGE:</b> Print out a Storage Ticket, select a slot, and fill it taking care not to present a
                     hazard. Vacate your slot before the printed expiration date, or if you need more time attend a Storage
-                    Meeting (or have omeone act as an Agent on your behalf).</li>
+                    Meeting (or have someone act as an Agent on your behalf).</li>
                 <li><b>USING PROJECT STORAGE (shelves):</b> Insert your completed Storage Ticket in the slot, occupy it, and
                     keep your project visually separate from adjacent slots</li>
                 <li><b>USING PALLET STORAGE:</b> Load your pallet and park it under the shelves or in pallet storage. Situate
@@ -279,57 +279,37 @@
                         }
                     }
                 }
-            }).on('submit', function (e) {
-                if (!e.isDefaultPrevented()) {
-                    // send ajax
-                    $.ajax({
-                        url: './ticketApi/print', // url where to submit the request
-                        type: "POST", // type of action POST || GET
-                        dataType: 'json', // data type
-                        data: $("#form").serialize(), // post data || get data
-                        success: function (result) {
+            }).on('success.form.bv', function (e) {
+                e.preventDefault()
 
-                            console.log(result);
+                // send ajax
+                $.ajax({
+                    url: './ticketApi/print', // url where to submit the request
+                    type: "POST", // type of action POST || GET
+                    dataType: 'json', // data type
+                    data: $("#form").serialize(), // post data || get data
+                    success: function (result) {
 
-                            window.appInsights.trackEvent("Ticket", { name: $("input[name=name]").val(), email: $("input[name=email]").val(), desc: $("input[name=description]").val(), storageType: $("select[name=storageType]").val() });
+                        console.log(result);
 
-                            $("#result").text("");
-                            $("#submit").removeAttr('disabled');
-                            $("#form")[0].reset()
-                            $("#form").data('bootstrapValidator').resetForm()
-                        },
-                        error: function (xhr, resp, text) {
-                            console.log(xhr, resp, text);
+                        window.appInsights.trackEvent("Ticket", { name: $("input[name=name]").val(), email: $("input[name=email]").val(), desc: $("input[name=description]").val(), storageType: $("select[name=storageType]").val() });
 
-                            window.appInsights.trackEvent("TicketError", { errorText: text, name: $("input[name=name]").val(), email: $("input[name=email]").val(), desc: $("input[name=description]").val(), storageType: $("select[name=storageType]").val() });
+                        $("#result").text("");
+                        
+                        $("#form")
+                            .bootstrapValidator('disableSubmitButtons', false)
+                            .bootstrapValidator('resetForm', true)
+                    },
+                    error: function (xhr, resp, text) {
+                        console.log(xhr, resp, text);
 
-                            $("#result").text("ERROR PRINTING :( " + text);
-                            $("#submit").removeAttr('disabled');
-                        }
-                    })
+                        window.appInsights.trackEvent("TicketError", { errorText: text, name: $("input[name=name]").val(), email: $("input[name=email]").val(), desc: $("input[name=description]").val(), storageType: $("select[name=storageType]").val() });
 
-                    e.preventDefault()
-                }
+                        $("#result").text("ERROR PRINTING :( " + text + " " + xhr.responseText);
+                        $("#submit").removeAttr('disabled');
+                    }
+                })             
             })
-
-            // click on button submit
-            // $("#submit").on('click', function () {
-
-            //     // send ajax
-            //     $.ajax({
-            //         url: './ticketApi/print', // url where to submit the request
-            //         type: "POST", // type of action POST || GET
-            //         dataType: 'json', // data type
-            //         data: $("#form").serialize(), // post data || get data
-            //         success: function (result) {
-            //             // you can see the result from the console
-            //             // tab of the developer tools
-            //             console.log(result);
-            //         },
-            //         error: function (xhr, resp, text) {
-            //             console.log(xhr, resp, text);
-            //         }
-            //     })
         });
     </script>
 
