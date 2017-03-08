@@ -37,3 +37,14 @@ sudo nano /etc/rc.local
 iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to 8080
 cd /home/pi/go/src/github.com/brandonagr/dms-storage
 ./dms-storage >> /var/log/storage.log 2>&1 &
+
+
+
+Setup arduino rfid reader:
+Write sketch to arduino
+
+lsusb
+udevadm info -a -n /dev/ttyACM0 | grep '{serial}'
+
+added following to /etc/udev/rules.d/98-usb-serial.rules
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", ATTRS{serial}=="serialfrom udevadm info", SYMLINK+="rfidReader"
