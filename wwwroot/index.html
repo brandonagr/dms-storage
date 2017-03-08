@@ -303,7 +303,7 @@
                     error: function (xhr, resp, text) {
                         console.log(xhr, resp, text);
 
-                        window.appInsights.trackEvent("TicketError", { errorText: text, name: $("input[name=name]").val(), email: $("input[name=email]").val(), desc: $("input[name=description]").val(), storageType: $("select[name=storageType]").val() });
+                        window.appInsights.trackEvent("TicketError", { errorText: xhr.responseText, name: $("input[name=name]").val(), email: $("input[name=email]").val(), desc: $("input[name=description]").val(), storageType: $("select[name=storageType]").val() });
 
                         $("#result").text("ERROR PRINTING :( " + text + " " + xhr.responseText);
                         $("#submit").removeAttr('disabled');
